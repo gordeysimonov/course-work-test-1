@@ -2,6 +2,7 @@ package com.oop.coursework.services;
 
 import com.oop.coursework.model.Genre;
 import com.oop.coursework.model.MusicFile;
+import com.oop.coursework.model.Rate;
 import com.oop.coursework.model.Tag;
 import com.oop.coursework.repo.GenreRepo;
 import com.oop.coursework.repo.MusicFileRepo;
@@ -35,12 +36,18 @@ public class MusicFileService {
         musicFileRepository.save(musicFile);
     }
 
-    public List<MusicFile> getMusicFileById(Long id) {
-        return musicFileRepository.findAllById(id);
+    public ResponseEntity<?> getMusicFileById(Long id) {
+        Optional<MusicFile> optionalMusicFile = musicFileRepository.findById(id);
+        if (optionalMusicFile.isPresent()) {
+            return ResponseEntity.ok(optionalMusicFile.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    public List<MusicFile> getMusicFiles() {
-        return musicFileRepository.findAll();
+    public ResponseEntity<?> getMusicFiles() {
+        List<MusicFile> musicFiles = musicFileRepository.findAll();
+        return ResponseEntity.ok(musicFiles);
     }
 
     public ResponseEntity<?> updateMusicFile(Long id, MusicFile newMusicFileData) {

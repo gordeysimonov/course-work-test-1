@@ -26,12 +26,12 @@ public class MusicFileController {
     }
 
     @GetMapping("/music-file")
-    public List<MusicFile> getMusicFile(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<?> getMusicFile(@RequestParam(value = "id") Long id) {
         return musicFileService.getMusicFileById(id);
     }
 
     @GetMapping("/music-file/get-music-files")
-    public List<MusicFile> getMusicFile() {
+    public ResponseEntity<?> getMusicFile() {
         return musicFileService.getMusicFiles();
     }
 
