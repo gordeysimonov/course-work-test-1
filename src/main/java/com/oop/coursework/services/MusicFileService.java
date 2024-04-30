@@ -1,9 +1,6 @@
 package com.oop.coursework.services;
 
-import com.oop.coursework.model.Genre;
-import com.oop.coursework.model.MusicFile;
-import com.oop.coursework.model.Rate;
-import com.oop.coursework.model.Tag;
+import com.oop.coursework.model.*;
 import com.oop.coursework.repo.GenreRepo;
 import com.oop.coursework.repo.MusicFileRepo;
 import com.oop.coursework.repo.TagRepo;
@@ -19,34 +16,33 @@ import java.util.Set;
 @Service
 public class MusicFileService {
 
-    private MusicFileRepo musicFileRepository;
-    private GenreRepo genreRepository;
-    private TagRepo tagRepository;
+    private final MusicFileRepo musicFileRepository;
+    private final GenreRepo genreRepository;
+    private final TagRepo tagRepository;
+    private final CategoryService categoryService;
 
     @Autowired
-    public MusicFileService(MusicFileRepo musicFileRepository, GenreRepo genreRepository, TagRepo tagRepository) {
+    public MusicFileService(MusicFileRepo musicFileRepository, GenreRepo genreRepository, TagRepo tagRepository, CategoryService categoryService) {
         this.musicFileRepository = musicFileRepository;
         this.genreRepository = genreRepository;
         this.tagRepository = tagRepository;
+        this.categoryService = categoryService;
     }
 
     public void createNewMusicFile(MusicFile musicFile) {
         musicFile.setDownloadDate(LocalDateTime.now());
         musicFile.setDownloadsNumber(0);
-        musicFileRepository.save(musicFile);
+        MusicFile savedFile = musicFileRepository.save(musicFile);
+        categoryService.updateCategoriesWithFile(savedFile);
     }
 
     public ResponseEntity<?> getMusicFileById(Long id) {
-        Optional<MusicFile> optionalMusicFile = musicFileRepository.findById(id);
-        if (optionalMusicFile.isPresent()) {
-            return ResponseEntity.ok(optionalMusicFile.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        List<Object[]> musicFiles = musicFileRepository.findMusicFileById(id);
+        return ResponseEntity.ok(musicFiles);
     }
 
     public ResponseEntity<?> getMusicFiles() {
-        List<MusicFile> musicFiles = musicFileRepository.findAll();
+        List<Object[]> musicFiles = musicFileRepository.findAllMusicFiles();
         return ResponseEntity.ok(musicFiles);
     }
 
@@ -54,13 +50,27 @@ public class MusicFileService {
         Optional<MusicFile> optionalMusicFile = musicFileRepository.findById(id);
         if (optionalMusicFile.isPresent()) {
             MusicFile existingMusicFile = optionalMusicFile.get();
-            existingMusicFile.setName(newMusicFileData.getName());
-            existingMusicFile.setAuthor(newMusicFileData.getAuthor());
-            existingMusicFile.setYear(newMusicFileData.getYear());
-            existingMusicFile.setDescription(newMusicFileData.getDescription());
-            existingMusicFile.setLyrics(newMusicFileData.getLyrics());
-            existingMusicFile.setFilePath(newMusicFileData.getFilePath());
-            existingMusicFile.setFileType(newMusicFileData.getFileType());
+            if(newMusicFileData.getName() != null) {
+                existingMusicFile.setName(newMusicFileData.getName());
+            }
+            if(newMusicFileData.getAuthor() != null) {
+                existingMusicFile.setAuthor(newMusicFileData.getAuthor());
+            }
+            if(newMusicFileData.getYear() != 0) {
+                existingMusicFile.setYear(newMusicFileData.getYear());
+            }
+            if(newMusicFileData.getDescription() != null) {
+                existingMusicFile.setDescription(newMusicFileData.getDescription());
+            }
+            if(newMusicFileData.getLyrics() != null) {
+                existingMusicFile.setLyrics(newMusicFileData.getLyrics());
+            }
+            if(newMusicFileData.getFilePath() != null) {
+                existingMusicFile.setFilePath(newMusicFileData.getFilePath());
+            }
+            if(newMusicFileData.getFileType() != null) {
+                existingMusicFile.setFileType(newMusicFileData.getFileType());
+            }
             if(newMusicFileData.getDownloadDate() != null) {
                 existingMusicFile.setDownloadDate(newMusicFileData.getDownloadDate());
             }
@@ -123,6 +133,39 @@ public class MusicFileService {
         tagSet.add(tag);
         musicFile.setTags(tagSet);
         return musicFileRepository.save(musicFile);
+    }
+
+    public List<Object[]> getMusicFilesByUserId(Long userId) {
+        return musicFileRepository.findMusicFilesByUserId(userId);
+    }
+
+    public ResponseEntity<?> findMusicFilesByTags(List<String> tags) {
+        int tagCount = tags.size();
+
+        List<Object[]> musicFiles = musicFileRepository.findByTags(tags, tagCount);
+        return ResponseEntity.ok(musicFiles);
+    }
+
+    public ResponseEntity<?> findMusicFilesByGenres(List<String> genres) {
+        int genreCount = genres.size();
+
+        List<Object[]> musicFiles = musicFileRepository.findByGenres(genres, genreCount);
+        return ResponseEntity.ok(musicFiles);
+    }
+
+    public ResponseEntity<?> findMusicFilesByName(String name) {
+        List<Object[]> musicFiles = musicFileRepository.findByName(name);
+        return ResponseEntity.ok(musicFiles);
+    }
+
+    public ResponseEntity<?> findMusicFilesByAuthor(String author) {
+        List<Object[]> musicFiles = musicFileRepository.findByAuthor(author);
+        return ResponseEntity.ok(musicFiles);
+    }
+
+    public ResponseEntity<?> findMusicFilesByYear(int year) {
+        List<Object[]> musicFiles = musicFileRepository.findByYear(year);
+        return ResponseEntity.ok(musicFiles);
     }
 
 }

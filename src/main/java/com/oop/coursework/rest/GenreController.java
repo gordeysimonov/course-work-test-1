@@ -3,6 +3,7 @@ package com.oop.coursework.rest;
 import com.oop.coursework.model.Genre;
 import com.oop.coursework.services.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,13 @@ public class GenreController {
 
     @PostMapping("genre")
     public ResponseEntity<?> createNewGenre(@RequestBody Genre genre){
-        return ResponseEntity.ok(genreService.createNewGenre(genre));
+        genreService.createNewGenre(genre);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("genre/get-genres")
+    public ResponseEntity<?> getGenres() {
+        return genreService.getAllGenres();
     }
 
     @GetMapping("genre")

@@ -26,12 +26,12 @@ public class MusicFileController {
     }
 
     @GetMapping("/music-file")
-    public ResponseEntity<?> getMusicFile(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<?> getMusicFileById(@RequestParam(value = "id") Long id) {
         return musicFileService.getMusicFileById(id);
     }
 
     @GetMapping("/music-file/get-music-files")
-    public ResponseEntity<?> getMusicFile() {
+    public ResponseEntity<?> getMusicFiles() {
         return musicFileService.getMusicFiles();
     }
 
@@ -59,6 +59,37 @@ public class MusicFileController {
             @PathVariable Long tagId
     ){
         return musicFileService.assignTagToMusicFile(musicFileId, tagId);
+    }
+
+    @GetMapping("/music-file/get-by-user")
+    public ResponseEntity<List<Object[]>> getMusicFilesByUserId(@RequestParam Long id) {
+        List<Object[]> musicFiles = musicFileService.getMusicFilesByUserId(id);
+        return ResponseEntity.ok(musicFiles);
+    }
+
+    @GetMapping("/music-file/by-tags")
+    public ResponseEntity<?> getMusicFilesByTags(@RequestParam List<String> tags) {
+        return musicFileService.findMusicFilesByTags(tags);
+    }
+
+    @GetMapping("/music-file/by-genres")
+    public ResponseEntity<?> getMusicFilesByGenres(@RequestParam List<String> genres) {
+        return musicFileService.findMusicFilesByGenres(genres);
+    }
+
+    @GetMapping("/music-file/by-name")
+    public ResponseEntity<?> getMusicFilesByName(@RequestParam String name) {
+        return musicFileService.findMusicFilesByName(name);
+    }
+
+    @GetMapping("/music-file/by-author")
+    public ResponseEntity<?> getMusicFilesByAuthor(@RequestParam String author) {
+        return musicFileService.findMusicFilesByAuthor(author);
+    }
+
+    @GetMapping("/music-file/by-year")
+    public ResponseEntity<?> getMusicFilesByYear(@RequestParam int year) {
+        return musicFileService.findMusicFilesByYear(year);
     }
 
 }

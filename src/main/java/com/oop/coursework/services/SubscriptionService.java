@@ -6,20 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class SubscriptionService {
 
-    private SubscriptionRepo subscriptionRepository;
+    private final SubscriptionRepo subscriptionRepository;
 
     @Autowired
     public SubscriptionService(SubscriptionRepo subscriptionRepository) {
         this.subscriptionRepository = subscriptionRepository;
     }
 
-    public Subscription createNewSubscription(Subscription subscription) {
-        return subscriptionRepository.save(subscription);
+    public void createNewSubscription(Subscription subscription) {
+        subscription.setSubscriptionDate(LocalDateTime.now());
+        subscriptionRepository.save(subscription);
     }
 
     public ResponseEntity<?> getSubscriptionById(long id) {
@@ -35,9 +38,14 @@ public class SubscriptionService {
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(id);
         if (optionalSubscription.isPresent()) {
             Subscription existingSubscription = optionalSubscription.get();
-            existingSubscription.setSubscribedId(newSubscriptionData.getSubscribedId());
-            if(newSubscriptionData.getSubscriberId() != null) {
-                existingSubscription.setSubscriberId(newSubscriptionData.getSubscriberId());
+            if(newSubscriptionData.getSubscribedTo() != null) {
+                existingSubscription.setSubscribedTo(newSubscriptionData.getSubscribedTo());
+            }
+            if(newSubscriptionData.getSubscriber() != null) {
+                existingSubscription.setSubscriber(newSubscriptionData.getSubscriber());
+            }
+            if(newSubscriptionData.getSubscriptionDate() != null) {
+                existingSubscription.setSubscriptionDate(newSubscriptionData.getSubscriptionDate());
             }
             subscriptionRepository.save(existingSubscription);
             return ResponseEntity.ok(existingSubscription);
@@ -54,6 +62,16 @@ public class SubscriptionService {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public ResponseEntity<?> getSubscriptions(Long id) {
+        List<Object[]> subscriptions = subscriptionRepository.findSubscriptions(id);
+        return ResponseEntity.ok(subscriptions);
+    }
+
+    public ResponseEntity<?> getSubscribers(Long id) {
+        List<Object[]> subscriptions = subscriptionRepository.findSubscribers(id);
+        return ResponseEntity.ok(subscriptions);
     }
 
 }

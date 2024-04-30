@@ -11,15 +11,15 @@ import java.util.Optional;
 @Service
 public class AuthenticationSessionService {
 
-    private AuthenticationSessionRepo authenticationSessionRepository;
+    private final AuthenticationSessionRepo authenticationSessionRepository;
 
     @Autowired
     public AuthenticationSessionService(AuthenticationSessionRepo authenticationSessionRepository) {
         this.authenticationSessionRepository = authenticationSessionRepository;
     }
 
-    public AuthenticationSession createNewAuthenticationSession(AuthenticationSession authenticationSession) {
-        return authenticationSessionRepository.save(authenticationSession);
+    public void createNewAuthenticationSession(AuthenticationSession authenticationSession) {
+        authenticationSessionRepository.save(authenticationSession);
     }
 
     public ResponseEntity<?> getAuthenticationSessionById(long id) {

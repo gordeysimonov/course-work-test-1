@@ -3,6 +3,7 @@ package com.oop.coursework.rest;
 import com.oop.coursework.model.AppUser;
 import com.oop.coursework.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,8 @@ public class UserController {
 
     @PostMapping("/user")
     public ResponseEntity<?> createNewUser(@RequestBody AppUser user){
-        return ResponseEntity.ok(userService.createNewUser(user));
+        userService.createNewUser(user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/user")
@@ -26,6 +28,10 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    @GetMapping("/user/get-users")
+    public ResponseEntity<?> getUsers() {
+        return userService.getAllUsers();
+    }
 
     @PutMapping("/user")
     public ResponseEntity<?> updateUser(@RequestBody AppUser newUserData) {

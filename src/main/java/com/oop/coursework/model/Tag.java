@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -18,7 +16,7 @@ public class Tag {
     private String tagName;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL)
     private Set<MusicFile> musicFiles;
 
 }

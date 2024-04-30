@@ -3,6 +3,7 @@ package com.oop.coursework.rest;
 import com.oop.coursework.model.Notification;
 import com.oop.coursework.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +19,12 @@ public class NotificationController {
 
     @PostMapping("notification")
     public ResponseEntity<?> createNewNotification(@RequestBody Notification notification){
-        return ResponseEntity.ok(notificationService.createNewNotification(notification));
+        notificationService.createNewNotification(notification);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("notification")
-    public ResponseEntity<?> getNotificationById(@RequestParam(value = "id") long id) {
+    public ResponseEntity<?> getNotificationById(@RequestParam(value = "id") Long id) {
         return notificationService.getNotificationById(id);
     }
 
@@ -32,8 +34,18 @@ public class NotificationController {
     }
 
     @DeleteMapping("notification")
-    public ResponseEntity<?> deleteNotification(@RequestParam(value = "id") long id) {
+    public ResponseEntity<?> deleteNotification(@RequestParam(value = "id") Long id) {
         return notificationService.deleteNotification(id);
+    }
+
+    @GetMapping("notification/get-user-notifications")
+    public ResponseEntity<?> getUserNotifications(@RequestParam(value = "id") Long id) {
+        return notificationService.getUserNotifications(id);
+    }
+
+    @GetMapping("notification/get-unread-user-notifications")
+    public ResponseEntity<?> getUserNotificationsWithStatus(@RequestParam(value = "id") Long id) {
+        return notificationService.getUserNotificationsWithStatus(id);
     }
 
 }

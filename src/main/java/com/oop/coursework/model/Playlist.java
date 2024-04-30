@@ -1,6 +1,5 @@
 package com.oop.coursework.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,10 +18,11 @@ public class Playlist {
     @ManyToMany
     @JoinTable(
             name = "musicFilePlaylists",
-            inverseJoinColumns = { @JoinColumn(name="musicFileId", referencedColumnName = "id", updatable = false, insertable = false) },
-            joinColumns = { @JoinColumn(name="playlistId", referencedColumnName = "id", updatable = false, insertable = false) }
+            inverseJoinColumns = { @JoinColumn(name="musicFileId", referencedColumnName = "id") },
+            joinColumns = { @JoinColumn(name="playlistId", referencedColumnName = "id") }
     )
     private Set<MusicFile> musicFiles;
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private AppUser userId;

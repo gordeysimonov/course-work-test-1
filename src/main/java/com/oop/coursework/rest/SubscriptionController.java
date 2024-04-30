@@ -3,6 +3,7 @@ package com.oop.coursework.rest;
 import com.oop.coursework.model.Subscription;
 import com.oop.coursework.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,8 @@ public class SubscriptionController {
 
     @PostMapping("subscription")
     public ResponseEntity<?> createNewSubscription(@RequestBody Subscription subscription){
-        return ResponseEntity.ok(subscriptionService.createNewSubscription(subscription));
+        subscriptionService.createNewSubscription(subscription);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("subscription")
@@ -34,6 +36,16 @@ public class SubscriptionController {
     @DeleteMapping("subscription")
     public ResponseEntity<?> deleteSubscription(@RequestParam(value = "id") long id) {
         return subscriptionService.deleteSubscription(id);
+    }
+
+    @GetMapping("subscription/get-subscriptions")
+    public ResponseEntity<?> getSubscriptions(@RequestParam(value = "id") long id) {
+        return subscriptionService.getSubscriptions(id);
+    }
+
+    @GetMapping("subscription/get-subscribers")
+    public ResponseEntity<?> getSubscribers(@RequestParam(value = "id") long id) {
+        return subscriptionService.getSubscribers(id);
     }
 
 }

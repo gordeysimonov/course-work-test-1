@@ -1,5 +1,6 @@
 package com.oop.coursework.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ public class Notification {
     private String notificationType;
     private String notificationText;
     private String status;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dateReceiving;
 
     @ManyToOne

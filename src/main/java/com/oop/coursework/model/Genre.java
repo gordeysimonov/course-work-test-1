@@ -1,11 +1,9 @@
 package com.oop.coursework.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -19,7 +17,7 @@ public class Genre {
     private String description;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "genres")
+    @ManyToMany(mappedBy = "genres", cascade = CascadeType.ALL)
     private Set<MusicFile> musicFiles;
 
 }

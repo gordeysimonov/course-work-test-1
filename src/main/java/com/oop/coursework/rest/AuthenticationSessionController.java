@@ -3,6 +3,7 @@ package com.oop.coursework.rest;
 import com.oop.coursework.model.AuthenticationSession;
 import com.oop.coursework.services.AuthenticationSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,8 @@ public class AuthenticationSessionController {
 
     @PostMapping("authentication-session")
     public ResponseEntity<?> createNewAuthenticationSession(@RequestBody AuthenticationSession authenticationSession){
-        return ResponseEntity.ok(authenticationSessionService.createNewAuthenticationSession(authenticationSession));
+        authenticationSessionService.createNewAuthenticationSession(authenticationSession);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("authentication-session")

@@ -6,20 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class GenreService {
 
-    private GenreRepo genreRepository;
+    private final GenreRepo genreRepository;
 
     @Autowired
     public GenreService(GenreRepo genreRepository) {
         this.genreRepository = genreRepository;
     }
 
-    public Genre createNewGenre(Genre genre) {
-        return genreRepository.save(genre);
+    public void createNewGenre(Genre genre) {
+        genreRepository.save(genre);
     }
 
     public ResponseEntity<?> getGenreById(long id) {
@@ -31,12 +32,26 @@ public class GenreService {
         }
     }
 
+    public ResponseEntity<?> getAllGenres() {
+        List<?> genres = genreRepository.findAll();
+        if (genres.isEmpty()) {
+            ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(genres);
+        }
+        return null;
+    }
+
     public ResponseEntity<?> updateGenre(long id, Genre newGenreData) {
         Optional<Genre> optionalGenre = genreRepository.findById(id);
         if (optionalGenre.isPresent()) {
             Genre existingGenre = optionalGenre.get();
-            existingGenre.setGenre(newGenreData.getGenre());
-            existingGenre.setDescription(newGenreData.getDescription());
+            if(newGenreData.getGenre() != null) {
+                existingGenre.setGenre(newGenreData.getGenre());
+            }
+            if(newGenreData.getDescription() != null) {
+                existingGenre.setDescription(newGenreData.getDescription());
+            }
             genreRepository.save(existingGenre);
             return ResponseEntity.ok(existingGenre);
         } else {

@@ -1,12 +1,11 @@
 package com.oop.coursework.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,18 +22,23 @@ public class MusicFile {
     private String description;
     private String lyrics;
     private String filePath;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "fileType", length = 5)
     private FileType fileType;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime downloadDate;
     private int downloadsNumber;
     @ManyToOne
     @JoinColumn(nullable = false)
     private AppUser userId;
-    @OneToMany(mappedBy = "musicFileId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "musicFileId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Rate> musicFileRatingList;
-    @OneToMany(mappedBy = "musicFileId", cascade = CascadeType.ALL)
+    private double averageRate;
+    @OneToMany(mappedBy = "musicFileId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Comment> musicFileCommentList;
+    private int commentsNumber;
 
     @ManyToMany
     @JoinTable(
@@ -53,17 +57,41 @@ public class MusicFile {
     private Set<Tag> tags;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "musicFiles")
+    @ManyToMany(mappedBy = "musicFiles", cascade = CascadeType.ALL)
     private Set<Category> categories;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "musicFiles")
+    @ManyToMany(mappedBy = "musicFiles", cascade = CascadeType.ALL)
     private Set<Playlist> playlists;
 
     public enum FileType {
         MP3,
         WAV,
         OTHER
+    }
+
+    public void updateAverageRate() {
+        if (musicFileRatingList != null && !musicFileRatingList.isEmpty()) {
+            double sum = 0;
+            for (Rate rate : musicFileRatingList) {
+                sum += rate.getRate().getValue();
+            }
+            averageRate = sum / musicFileRatingList.size();
+            System.out.println("Average rate updated: " + averageRate); // Додайте логування
+        } else {
+            averageRate = 0;
+        }
+    }
+
+    @PostLoad
+    public void postLoad() {
+        updateAverageRate();
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void prePersistOrUpdate() {
+        updateAverageRate();
     }
 
 }

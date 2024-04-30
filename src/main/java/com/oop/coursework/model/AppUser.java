@@ -1,5 +1,6 @@
 package com.oop.coursework.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -19,21 +20,25 @@ public class AppUser {
     private String password;
     private String role;
     private String photoUrl;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime registrationDate;
     private String status;
 
-    @OneToMany(mappedBy = "subscriberId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Subscription> userSubscriptionsList;
-    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    private List<Subscription> subscriptions;
+    @OneToMany(mappedBy = "subscribedTo", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<MusicFile> userMusicFilesList;
+    private List<Subscription> subscribers;
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Rate> userRatesList;
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment> userCommentsList;
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<MusicFile> userMusicFilesList;
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Playlist> userPlaylistsList;

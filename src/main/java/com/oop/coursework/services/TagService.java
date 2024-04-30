@@ -6,20 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TagService {
 
-    private TagRepo tagRepository;
+    private final TagRepo tagRepository;
 
     @Autowired
     public TagService(TagRepo tagRepository) {
         this.tagRepository = tagRepository;
     }
 
-    public Tag createNewTag(Tag tag) {
-        return tagRepository.save(tag);
+    public void createNewTag(Tag tag) {
+        tagRepository.save(tag);
     }
 
     public ResponseEntity<?> getTagById(long id) {
@@ -29,6 +30,16 @@ public class TagService {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public ResponseEntity<?> getAllTags() {
+        List<?> tags = tagRepository.findAll();
+        if (tags.isEmpty()) {
+            ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(tags);
+        }
+        return null;
     }
 
     public ResponseEntity<?> updateTag(long id, Tag newTagData) {

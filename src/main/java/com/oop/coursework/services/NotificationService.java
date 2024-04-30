@@ -6,20 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class NotificationService {
 
-    private NotificationRepo notificationRepository;
+    private final NotificationRepo notificationRepository;
 
     @Autowired
     public NotificationService(NotificationRepo notificationRepository) {
         this.notificationRepository = notificationRepository;
     }
 
-    public Notification createNewNotification(Notification notification) {
-        return notificationRepository.save(notification);
+    public void createNewNotification(Notification notification) {
+        notification.setDateReceiving(LocalDateTime.now());
+        notificationRepository.save(notification);
     }
 
     public ResponseEntity<?> getNotificationById(long id) {
@@ -35,10 +38,18 @@ public class NotificationService {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         if (optionalNotification.isPresent()) {
             Notification existingNotification = optionalNotification.get();
-            existingNotification.setNotificationType(newNotificationData.getNotificationType());
-            existingNotification.setNotificationText(newNotificationData.getNotificationText());
-            existingNotification.setStatus(newNotificationData.getStatus());
-            existingNotification.setDateReceiving(newNotificationData.getDateReceiving());
+            if(newNotificationData.getNotificationType() != null) {
+                existingNotification.setNotificationType(newNotificationData.getNotificationType());
+            }
+            if(newNotificationData.getNotificationText() != null) {
+                existingNotification.setNotificationText(newNotificationData.getNotificationText());
+            }
+            if(newNotificationData.getStatus() != null) {
+                existingNotification.setStatus(newNotificationData.getStatus());
+            }
+            if(newNotificationData.getDateReceiving() != null) {
+                existingNotification.setDateReceiving(newNotificationData.getDateReceiving());
+            }
             if(newNotificationData.getUserId() != null) {
                 existingNotification.setUserId(newNotificationData.getUserId());
             }
@@ -57,6 +68,16 @@ public class NotificationService {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public ResponseEntity<?> getUserNotifications(Long id) {
+        List<Object[]> notifications = notificationRepository.findByUserId(id);
+        return ResponseEntity.ok(notifications);
+    }
+
+    public ResponseEntity<?> getUserNotificationsWithStatus(Long id) {
+        List<Object[]> notifications = notificationRepository.findByUserIdAndStatus(id);
+        return ResponseEntity.ok(notifications);
     }
 
 }

@@ -1,10 +1,9 @@
 package com.oop.coursework.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -20,9 +19,9 @@ public class Category {
     @ManyToMany
     @JoinTable(
             name = "musicFileCategories",
-            inverseJoinColumns = { @JoinColumn(name="musicFileId", referencedColumnName = "id", updatable = false, insertable = false) },
-            joinColumns = { @JoinColumn(name="categoryId", referencedColumnName = "id", updatable = false, insertable = false) }
+            inverseJoinColumns = { @JoinColumn(name="musicFileId", referencedColumnName = "id") },
+            joinColumns = { @JoinColumn(name="categoryId", referencedColumnName = "id") }
     )
-    private Set<MusicFile> musicFiles;
+    private List<MusicFile> musicFiles;
 
 }

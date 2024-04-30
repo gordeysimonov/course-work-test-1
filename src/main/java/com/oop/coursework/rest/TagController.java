@@ -3,6 +3,7 @@ package com.oop.coursework.rest;
 import com.oop.coursework.model.Tag;
 import com.oop.coursework.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,13 @@ public class TagController {
 
     @PostMapping("tag")
     public ResponseEntity<?> createNewTag(@RequestBody Tag tag){
-        return ResponseEntity.ok(tagService.createNewTag(tag));
+        tagService.createNewTag(tag);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("tag/get-tags")
+    public ResponseEntity<?> getGenres() {
+        return tagService.getAllTags();
     }
 
     @GetMapping("tag")
