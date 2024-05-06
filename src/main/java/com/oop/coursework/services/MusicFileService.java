@@ -108,7 +108,16 @@ public class MusicFileService {
     public ResponseEntity<?> deleteMusicFile(long id) {
         Optional<MusicFile> optionalMusicFile = musicFileRepository.findById(id);
         if (optionalMusicFile.isPresent()) {
-            musicFileRepository.deleteById(id);
+            MusicFile musicFile = optionalMusicFile.get();
+
+            for (Genre genre : musicFile.getGenres()) {
+                removeGenreFromMusicFiles(genre.getId());
+            }
+            for (Tag tag : musicFile.getTags()) {
+                removeTagFromMusicFiles(tag.getId());
+            }
+
+            musicFileRepository.delete(musicFile);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -166,6 +175,22 @@ public class MusicFileService {
     public ResponseEntity<?> findMusicFilesByYear(int year) {
         List<Object[]> musicFiles = musicFileRepository.findByYear(year);
         return ResponseEntity.ok(musicFiles);
+    }
+
+    public void removeGenreFromMusicFiles(Long genreId) {
+        Set<MusicFile> musicFiles = musicFileRepository.findByGenresId(genreId);
+        for (MusicFile musicFile : musicFiles) {
+            musicFile.getGenres().removeIf(genre -> genre.getId().equals(genreId));
+            musicFileRepository.save(musicFile);
+        }
+    }
+
+    public void removeTagFromMusicFiles(Long tagId) {
+        Set<MusicFile> musicFiles = musicFileRepository.findByTagsId(tagId);
+        for (MusicFile musicFile : musicFiles) {
+            musicFile.getTags().removeIf(tag -> tag.getId().equals(tagId));
+            musicFileRepository.save(musicFile);
+        }
     }
 
 }

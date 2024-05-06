@@ -17,7 +17,7 @@ public class Genre {
     private String description;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "genres", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "genres")
     private Set<MusicFile> musicFiles;
 
 /*

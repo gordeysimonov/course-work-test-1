@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
 
@@ -209,8 +210,8 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "FROM MusicFile mf WHERE mf.year = :year ORDER BY mf.averageRate DESC")
     List<Object[]> findByYear(@Param("year") int year);
 
-    Optional<MusicFile> findById(long id);
-    void deleteById(long id);
-    List<MusicFile> findByGenresContains(Genre genre);  // todo : ВИКОРИСТАТИ ПЕРЕД ВИДАЛЕННЯМ ЖАНРУ ДЛЯ ВИДАЛЕННЯ ЗВ'ЯЗКІВ МІЖ ЖАНРАМИ ТА ФАЙЛАМИ
+    List<MusicFile> findByGenresContains(Genre genre);
+    Set<MusicFile> findByGenresId(Long genreId);
+    Set<MusicFile> findByTagsId(Long tagId);
 
 }
