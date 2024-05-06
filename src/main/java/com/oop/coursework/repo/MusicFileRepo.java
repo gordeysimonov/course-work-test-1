@@ -1,12 +1,13 @@
 package com.oop.coursework.repo;
 
-import com.oop.coursework.model.AppUser;
+import com.oop.coursework.model.Genre;
 import com.oop.coursework.model.MusicFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
 
@@ -24,8 +25,9 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "'tags', (SELECT json_agg(json_build_object('id', t.id, 'tagName', t.tagName)) FROM mf.tags t), " +
             "'genres', (SELECT json_agg(json_build_object('id', g.id, 'genre', g.genre)) FROM mf.genres g), " +
             "'users', (SELECT json_agg(json_build_object('id', u.id, 'username', u.username)) FROM mf.userId u), " +
-            "'averageRate', mf.averageRate, " +
+            "'commentsCount', (SELECT COUNT(*) FROM mf.musicFileCommentList), " +
             "'comments', (SELECT json_agg(json_build_object('id', c.id, 'comment', c.commentText)) FROM mf.musicFileCommentList c WHERE c.reply IS NULL), " +
+            "'averageRate', mf.averageRate, " +
             "'ratings', (SELECT json_agg(json_build_object('id', r.id, 'rating', r.rate)) FROM mf.musicFileRatingList r), " +
             "'categories', (SELECT json_agg(json_build_object('id', cat.id, 'categoryName', cat.name)) FROM mf.categories cat), " +
             "'playlists', (SELECT json_agg(json_build_object('id', p.id, 'playlistName', p.name)) FROM mf.playlists p) " +
@@ -47,6 +49,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "'tags', (SELECT json_agg(json_build_object('id', t.id, 'tagName', t.tagName)) FROM mf.tags t), " +
             "'genres', (SELECT json_agg(json_build_object('id', g.id, 'genre', g.genre)) FROM mf.genres g), " +
             "'users', (SELECT json_agg(json_build_object('id', u.id, 'username', u.username)) FROM mf.userId u), " +
+            "'commentsCount', (SELECT COUNT(*) FROM mf.musicFileCommentList), " +
             "'comments', (SELECT json_agg(json_build_object('id', c.id, 'comment', c.commentText)) FROM mf.musicFileCommentList c WHERE c.reply IS NULL), " +
             "'averageRate', mf.averageRate, " +
             "'ratings', (SELECT json_agg(json_build_object('id', r.id, 'rating', r.rate)) FROM mf.musicFileRatingList r), " +
@@ -70,6 +73,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "'tags', (SELECT json_agg(json_build_object('id', t.id, 'tagName', t.tagName)) FROM mf.tags t), " +
             "'genres', (SELECT json_agg(json_build_object('id', g.id, 'genre', g.genre)) FROM mf.genres g), " +
             "'users', (SELECT json_agg(json_build_object('id', u.id, 'username', u.username)) FROM mf.userId u), " +
+            "'commentsCount', (SELECT COUNT(*) FROM mf.musicFileCommentList), " +
             "'comments', (SELECT json_agg(json_build_object('id', c.id, 'comment', c.commentText)) FROM mf.musicFileCommentList c WHERE c.reply IS NULL), " +
             "'averageRate', mf.averageRate, " +
             "'ratings', (SELECT json_agg(json_build_object('id', r.id, 'rating', r.rate)) FROM mf.musicFileRatingList r), " +
@@ -93,6 +97,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "'tags', (SELECT json_agg(json_build_object('id', t.id, 'tagName', t.tagName)) FROM mf.tags t WHERE t.tagName IN :tagNames), " +
             "'genres', (SELECT json_agg(json_build_object('id', g.id, 'genre', g.genre)) FROM mf.genres g), " +
             "'users', (SELECT json_agg(json_build_object('id', u.id, 'username', u.username)) FROM mf.userId u), " +
+            "'commentsCount', (SELECT COUNT(*) FROM mf.musicFileCommentList), " +
             "'comments', (SELECT json_agg(json_build_object('id', c.id, 'comment', c.commentText)) FROM mf.musicFileCommentList c WHERE c.reply IS NULL), " +
             "'averageRate', mf.averageRate, " +
             "'ratings', (SELECT json_agg(json_build_object('id', r.id, 'rating', r.rate)) FROM mf.musicFileRatingList r), " +
@@ -119,6 +124,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "'tags', (SELECT json_agg(json_build_object('id', t.id, 'tagName', t.tagName)) FROM mf.tags t), " +
             "'genres', (SELECT json_agg(json_build_object('id', g.id, 'genre', g.genre)) FROM mf.genres g WHERE g.genre IN :genreNames), " +
             "'users', (SELECT json_agg(json_build_object('id', u.id, 'username', u.username)) FROM mf.userId u), " +
+            "'commentsCount', (SELECT COUNT(*) FROM mf.musicFileCommentList), " +
             "'comments', (SELECT json_agg(json_build_object('id', c.id, 'comment', c.commentText)) FROM mf.musicFileCommentList c WHERE c.reply IS NULL), " +
             "'averageRate', mf.averageRate, " +
             "'ratings', (SELECT json_agg(json_build_object('id', r.id, 'rating', r.rate)) FROM mf.musicFileRatingList r), " +
@@ -145,6 +151,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "'tags', (SELECT json_agg(json_build_object('id', t.id, 'tagName', t.tagName)) FROM mf.tags t), " +
             "'genres', (SELECT json_agg(json_build_object('id', g.id, 'genre', g.genre)) FROM mf.genres g), " +
             "'users', (SELECT json_agg(json_build_object('id', u.id, 'username', u.username)) FROM mf.userId u), " +
+            "'commentsCount', (SELECT COUNT(*) FROM mf.musicFileCommentList), " +
             "'comments', (SELECT json_agg(json_build_object('id', c.id, 'comment', c.commentText)) FROM mf.musicFileCommentList c WHERE c.reply IS NULL), " +
             "'averageRate', mf.averageRate, " +
             "'ratings', (SELECT json_agg(json_build_object('id', r.id, 'rating', r.rate)) FROM mf.musicFileRatingList r), " +
@@ -168,6 +175,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "'tags', (SELECT json_agg(json_build_object('id', t.id, 'tagName', t.tagName)) FROM mf.tags t), " +
             "'genres', (SELECT json_agg(json_build_object('id', g.id, 'genre', g.genre)) FROM mf.genres g), " +
             "'users', (SELECT json_agg(json_build_object('id', u.id, 'username', u.username)) FROM mf.userId u), " +
+            "'commentsCount', (SELECT COUNT(*) FROM mf.musicFileCommentList), " +
             "'comments', (SELECT json_agg(json_build_object('id', c.id, 'comment', c.commentText)) FROM mf.musicFileCommentList c WHERE c.reply IS NULL), " +
             "'averageRate', mf.averageRate, " +
             "'ratings', (SELECT json_agg(json_build_object('id', r.id, 'rating', r.rate)) FROM mf.musicFileRatingList r), " +
@@ -191,6 +199,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "'tags', (SELECT json_agg(json_build_object('id', t.id, 'tagName', t.tagName)) FROM mf.tags t), " +
             "'genres', (SELECT json_agg(json_build_object('id', g.id, 'genre', g.genre)) FROM mf.genres g), " +
             "'users', (SELECT json_agg(json_build_object('id', u.id, 'username', u.username)) FROM mf.userId u), " +
+            "'commentsCount', (SELECT COUNT(*) FROM mf.musicFileCommentList), " +
             "'comments', (SELECT json_agg(json_build_object('id', c.id, 'comment', c.commentText)) FROM mf.musicFileCommentList c WHERE c.reply IS NULL), " +
             "'averageRate', mf.averageRate, " +
             "'ratings', (SELECT json_agg(json_build_object('id', r.id, 'rating', r.rate)) FROM mf.musicFileRatingList r), " +
@@ -200,5 +209,8 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "FROM MusicFile mf WHERE mf.year = :year ORDER BY mf.averageRate DESC")
     List<Object[]> findByYear(@Param("year") int year);
 
-    List<MusicFile> findByUserId(AppUser userId);
+    Optional<MusicFile> findById(long id);
+    void deleteById(long id);
+    List<MusicFile> findByGenresContains(Genre genre);  // todo : ВИКОРИСТАТИ ПЕРЕД ВИДАЛЕННЯМ ЖАНРУ ДЛЯ ВИДАЛЕННЯ ЗВ'ЯЗКІВ МІЖ ЖАНРАМИ ТА ФАЙЛАМИ
+
 }

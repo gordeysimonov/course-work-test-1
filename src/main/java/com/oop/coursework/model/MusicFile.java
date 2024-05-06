@@ -38,7 +38,6 @@ public class MusicFile {
     @OneToMany(mappedBy = "musicFileId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Comment> musicFileCommentList;
-    private int commentsNumber;
 
     @ManyToMany
     @JoinTable(
@@ -77,20 +76,21 @@ public class MusicFile {
                 sum += rate.getRate().getValue();
             }
             averageRate = sum / musicFileRatingList.size();
-            System.out.println("Average rate updated: " + averageRate); // Додайте логування
+            System.out.println("Average rate updated: " + averageRate);
         } else {
             averageRate = 0;
         }
     }
 
+    @PrePersist
+    @PreUpdate
     @PostLoad
-    public void postLoad() {
+    public void prePersistOrUpdate() {
         updateAverageRate();
     }
 
-    @PrePersist
-    @PreUpdate
-    public void prePersistOrUpdate() {
+    public void removeRate(Rate rate) {
+        musicFileRatingList.remove(rate);
         updateAverageRate();
     }
 

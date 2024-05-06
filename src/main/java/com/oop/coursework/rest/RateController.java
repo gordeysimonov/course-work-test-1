@@ -20,7 +20,6 @@ public class RateController {
     @PostMapping("rate")
     public ResponseEntity<?> createNewRate(@RequestBody Rate rate){
         rateService.createNewRate(rate);
-        rateService.updateAverageRate();
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

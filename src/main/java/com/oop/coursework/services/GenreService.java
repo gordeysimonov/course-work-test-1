@@ -1,10 +1,13 @@
 package com.oop.coursework.services;
 
 import com.oop.coursework.model.Genre;
+import com.oop.coursework.model.MusicFile;
 import com.oop.coursework.repo.GenreRepo;
+import com.oop.coursework.repo.MusicFileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,10 +16,12 @@ import java.util.Optional;
 public class GenreService {
 
     private final GenreRepo genreRepository;
+    private final MusicFileRepo musicFileRepository;
 
     @Autowired
-    public GenreService(GenreRepo genreRepository) {
+    public GenreService(GenreRepo genreRepository, MusicFileRepo musicFileRepository) {
         this.genreRepository = genreRepository;
+        this.musicFileRepository = musicFileRepository;
     }
 
     public void createNewGenre(Genre genre) {
@@ -59,14 +64,26 @@ public class GenreService {
         }
     }
 
+    @Transactional
     public ResponseEntity<?> deleteGenre(long id) {
         Optional<Genre> optionalGenre = genreRepository.findById(id);
         if (optionalGenre.isPresent()) {
+            Genre genre = optionalGenre.get();
+
+            List<MusicFile> musicFiles = musicFileRepository.findByGenresContains(genre);
+
+            for (MusicFile musicFile : musicFiles) {
+                musicFile.getGenres().remove(genre);
+                musicFileRepository.save(musicFile);
+            }
+
             genreRepository.deleteById(id);
+
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 
 }

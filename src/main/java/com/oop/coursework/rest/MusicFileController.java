@@ -41,7 +41,7 @@ public class MusicFileController {
     }
 
     @DeleteMapping("/music-file")
-    public ResponseEntity<?> deleteUser(@RequestParam(value = "id") Long id) {
+    public ResponseEntity<?> deleteMusicFile(@RequestParam(value = "id") long id) {
         return musicFileService.deleteMusicFile(id);
     }
 

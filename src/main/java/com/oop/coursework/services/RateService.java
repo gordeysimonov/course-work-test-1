@@ -1,7 +1,6 @@
 package com.oop.coursework.services;
 
-import com.oop.coursework.model.Category;
-import com.oop.coursework.model.MusicFile;
+import com.oop.coursework.model.Comment;
 import com.oop.coursework.model.Rate;
 import com.oop.coursework.repo.CategoryRepo;
 import com.oop.coursework.repo.MusicFileRepo;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,27 +61,12 @@ public class RateService {
     public ResponseEntity<?> deleteRate(long id) {
         Optional<Rate> optionalRate = rateRepository.findById(id);
         if (optionalRate.isPresent()) {
-            rateRepository.deleteById(id);
+            Rate rate = optionalRate.get();
+            rate.getMusicFileId().removeRate(rate);
+            rateRepository.deleteRateById(rate.getId());
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
-        }
-    }
-
-    public void updateAverageRate() {
-        List<MusicFile> musicFiles = musicFileRepository.findAll();
-        for (MusicFile musicFileData : musicFiles) {
-            Long fileId = musicFileData.getId();
-            MusicFile musicFile = musicFileRepository.findById(fileId).orElse(null);
-            if (musicFile != null) {
-                musicFile.updateAverageRate();
-                musicFileRepository.save(musicFile);
-
-                List<Category> categories = categoryRepository.findAll();
-                for (Category category : categories) {
-                    categoryService.sortMusicFilesInCategory(category);
-                }
-            }
         }
     }
 

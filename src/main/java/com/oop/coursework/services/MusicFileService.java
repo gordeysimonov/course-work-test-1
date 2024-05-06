@@ -105,7 +105,7 @@ public class MusicFileService {
         }
     }
 
-    public ResponseEntity<?> deleteMusicFile(Long id) {
+    public ResponseEntity<?> deleteMusicFile(long id) {
         Optional<MusicFile> optionalMusicFile = musicFileRepository.findById(id);
         if (optionalMusicFile.isPresent()) {
             musicFileRepository.deleteById(id);

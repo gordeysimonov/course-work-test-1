@@ -20,4 +20,13 @@ public class Genre {
     @ManyToMany(mappedBy = "genres", cascade = CascadeType.ALL)
     private Set<MusicFile> musicFiles;
 
+/*
+    @PreRemove
+    private void removeGenresFromFiles() {
+        for (MusicFile musicFile : musicFiles) {
+            musicFile.getGenres().remove(this);
+        }
+    }
+*/
+
 }
