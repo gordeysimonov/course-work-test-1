@@ -16,7 +16,7 @@ public class Tag {
     private String tagName;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "tags")
     private Set<MusicFile> musicFiles;
 
 }

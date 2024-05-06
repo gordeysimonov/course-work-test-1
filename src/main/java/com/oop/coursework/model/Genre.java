@@ -20,13 +20,12 @@ public class Genre {
     @ManyToMany(mappedBy = "genres")
     private Set<MusicFile> musicFiles;
 
-/*
     @PreRemove
     private void removeGenresFromFiles() {
         for (MusicFile musicFile : musicFiles) {
             musicFile.getGenres().remove(this);
+            this.musicFiles.remove(musicFile);
         }
     }
-*/
 
 }

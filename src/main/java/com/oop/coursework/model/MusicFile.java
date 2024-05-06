@@ -56,11 +56,11 @@ public class MusicFile {
     private Set<Tag> tags;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "musicFiles", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "musicFiles")
     private Set<Category> categories;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "musicFiles", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "musicFiles")
     private Set<Playlist> playlists;
 
     public enum FileType {
