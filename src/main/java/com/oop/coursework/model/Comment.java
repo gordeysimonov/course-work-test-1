@@ -6,9 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -24,7 +22,7 @@ public class Comment {
     private Set<Comment> replies = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = true)
     @JsonIgnore
     private Comment reply;
 
@@ -42,6 +40,17 @@ public class Comment {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", commentText='" + commentText + '\'' +
+                ", postDate=" + postDate +
+                ", userId=" + userId +
+                ", musicFileId=" + musicFileId +
+                '}';
     }
 
 }

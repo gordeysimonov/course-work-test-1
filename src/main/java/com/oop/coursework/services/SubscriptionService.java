@@ -1,5 +1,6 @@
 package com.oop.coursework.services;
 
+import com.oop.coursework.annotation.LogService;
 import com.oop.coursework.model.Subscription;
 import com.oop.coursework.repo.SubscriptionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +21,19 @@ public class SubscriptionService {
         this.subscriptionRepository = subscriptionRepository;
     }
 
+    @LogService
     public void createNewSubscription(Subscription subscription) {
         subscription.setSubscriptionDate(LocalDateTime.now());
         subscriptionRepository.save(subscription);
     }
 
+    @LogService
     public ResponseEntity<?> getSubscriptionById(long id) {
-        Optional<Subscription> optionalSubscription = subscriptionRepository.findById(id);
-        if (optionalSubscription.isPresent()) {
-            return ResponseEntity.ok(optionalSubscription.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        List<Object[]> subscriptions = subscriptionRepository.findSubscriptionById(id);
+        return ResponseEntity.ok(subscriptions);
     }
 
+    @LogService
     public ResponseEntity<?> updateSubscription(long id, Subscription newSubscriptionData) {
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(id);
         if (optionalSubscription.isPresent()) {
@@ -54,6 +54,7 @@ public class SubscriptionService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> deleteSubscription(long id) {
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(id);
         if (optionalSubscription.isPresent()) {
@@ -64,11 +65,13 @@ public class SubscriptionService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> getSubscriptions(Long id) {
         List<Object[]> subscriptions = subscriptionRepository.findSubscriptions(id);
         return ResponseEntity.ok(subscriptions);
     }
 
+    @LogService
     public ResponseEntity<?> getSubscribers(Long id) {
         List<Object[]> subscriptions = subscriptionRepository.findSubscribers(id);
         return ResponseEntity.ok(subscriptions);

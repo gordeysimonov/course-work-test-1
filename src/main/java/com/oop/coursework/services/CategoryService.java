@@ -1,5 +1,6 @@
 package com.oop.coursework.services;
 
+import com.oop.coursework.annotation.LogService;
 import com.oop.coursework.model.Category;
 import com.oop.coursework.model.MusicFile;
 import com.oop.coursework.repo.CategoryRepo;
@@ -24,28 +25,38 @@ public class CategoryService {
         this.musicFileRepository = musicFileRepository;
     }
 
+    @LogService
     public void createNewCategory(Category category) {
         categoryRepository.save(category);
     }
 
+    @LogService
     public ResponseEntity<?> getCategoryById(Long id) {
         List<Object[]> categories = categoryRepository.findCategoryById(id);
         return ResponseEntity.ok(categories);
     }
 
+    @LogService
     public ResponseEntity<?> getCategories() {
         List<Object[]> categories = categoryRepository.findAllCategories();
         return ResponseEntity.ok(categories);
     }
 
+    @LogService
     public ResponseEntity<?> updateCategory(long id, Category newCategoryData) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if (optionalCategory.isPresent()) {
             Category existingCategory = optionalCategory.get();
-            existingCategory.setName(newCategoryData.getName());
-            existingCategory.setDescription(newCategoryData.getDescription());
-            existingCategory.setImageUrl(newCategoryData.getImageUrl());
-            if(newCategoryData.getMusicFiles() != null) {
+            if(newCategoryData.getName() != null) {
+                existingCategory.setName(newCategoryData.getName());
+            }
+            if(newCategoryData.getDescription() != null) {
+                existingCategory.setDescription(newCategoryData.getDescription());
+            }
+            if(newCategoryData.getImageUrl() != null) {
+                existingCategory.setImageUrl(newCategoryData.getImageUrl());
+            }
+            if(newCategoryData.getMusicFiles() != null && !newCategoryData.getMusicFiles().isEmpty() ) {
                 existingCategory.setMusicFiles(newCategoryData.getMusicFiles());
             }
             categoryRepository.save(existingCategory);
@@ -55,6 +66,7 @@ public class CategoryService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> deleteCategory(long id) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if (optionalCategory.isPresent()) {
@@ -65,6 +77,7 @@ public class CategoryService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> assignMusicFileToCategory(Long categoryId, Long musicFileId) {
         List<MusicFile> musicFileSet;
         Category category = categoryRepository.findById(categoryId).get();
@@ -78,6 +91,7 @@ public class CategoryService {
         return ResponseEntity.ok().body(categoryRepository.save(category));
     }
 
+    @LogService
     public void updateCategoriesWithFile(MusicFile musicFile) {
         List<Category> categories = categoryRepository.findAll();
 
@@ -92,11 +106,11 @@ public class CategoryService {
         categoryRepository.saveAll(categories);
     }
 
-
     private boolean categoryContainsFile(Category category, MusicFile musicFile) {
         return category.getMusicFiles().stream().anyMatch(file -> file.getId().equals(musicFile.getId()));
     }
 
+    @LogService
     void sortMusicFilesInCategory(Category category) {
         category.getMusicFiles().sort((file1, file2) -> {
             if (category.getName().equals("Most Downloaded!")) {

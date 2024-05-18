@@ -1,5 +1,6 @@
 package com.oop.coursework.repo;
 
+import com.oop.coursework.annotation.LogRepository;
 import com.oop.coursework.model.Genre;
 import com.oop.coursework.model.MusicFile;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
 
+    @LogRepository
     @Query("SELECT json_build_object(" +
             "'id', mf.id, " +
             "'name', mf.name, " +
@@ -35,6 +37,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "FROM MusicFile mf")
     List<Object[]> findAllMusicFiles();
 
+    @LogRepository
     @Query("SELECT json_build_object(" +
             "'id', mf.id, " +
             "'name', mf.name, " +
@@ -59,6 +62,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "FROM MusicFile mf WHERE mf.id = :id")
     List<Object[]> findMusicFileById(@Param("id") Long id);
 
+    @LogRepository
     @Query("SELECT json_build_object(" +
             "'id', mf.id, " +
             "'name', mf.name, " +
@@ -83,6 +87,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "FROM MusicFile mf WHERE mf.userId.id = :userId")
     List<Object[]> findMusicFilesByUserId(@Param("userId") Long userId);
 
+    @LogRepository
     @Query("SELECT json_build_object(" +
             "'id', mf.id, " +
             "'name', mf.name, " +
@@ -110,6 +115,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "HAVING COUNT(DISTINCT t.tagName) = :tagCount")
     List<Object[]> findByTags(@Param("tagNames") List<String> tagNames, @Param("tagCount") int tagCount);
 
+    @LogRepository
     @Query("SELECT json_build_object(" +
             "'id', mf.id, " +
             "'name', mf.name, " +
@@ -137,6 +143,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "HAVING COUNT(DISTINCT g.genre) = :genreCount")
     List<Object[]> findByGenres(@Param("genreNames") List<String> genreNames, @Param("genreCount") int genreCount);
 
+    @LogRepository
     @Query("SELECT json_build_object(" +
             "'id', mf.id, " +
             "'name', mf.name, " +
@@ -161,6 +168,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "FROM MusicFile mf WHERE mf.name LIKE CONCAT('%', :name, '%') ORDER BY mf.averageRate DESC")
     List<Object[]> findByName(@Param("name") String name);
 
+    @LogRepository
     @Query("SELECT json_build_object(" +
             "'id', mf.id, " +
             "'name', mf.name, " +
@@ -185,6 +193,7 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "FROM MusicFile mf WHERE mf.author LIKE CONCAT('%', :author, '%') ORDER BY mf.averageRate DESC")
     List<Object[]> findByAuthor(@Param("author") String author);
 
+    @LogRepository
     @Query("SELECT json_build_object(" +
             "'id', mf.id, " +
             "'name', mf.name, " +
@@ -209,8 +218,11 @@ public interface MusicFileRepo extends JpaRepository<MusicFile, Long> {
             "FROM MusicFile mf WHERE mf.year = :year ORDER BY mf.averageRate DESC")
     List<Object[]> findByYear(@Param("year") int year);
 
+    @LogRepository
     Optional<MusicFile> findById(long id);
+    @LogRepository
     void deleteById(long id);
+    @LogRepository
     List<MusicFile> findByGenresContains(Genre genre);
 
 }

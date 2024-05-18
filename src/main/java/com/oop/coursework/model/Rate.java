@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Entity
 @Data
 public class Rate {
@@ -41,6 +43,21 @@ public class Rate {
             this.value = value;
         }
 
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Rate{" +
+                "id=" + id +
+                ", rate=" + rate +
+                ", userId=" + userId.getUsername() +
+                ", musicFileId=" + musicFileId.getName() +
+                '}';
     }
 
 }

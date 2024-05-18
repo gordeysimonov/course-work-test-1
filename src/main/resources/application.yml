@@ -14,3 +14,10 @@ spring:
     username: postgres
     password: BroXiK22
     driverClassName: org.postgresql.Driver
+logging:
+  level:
+    root: INFO
+  pattern:
+    file: "%d %-5level [%thread] %logger : %msg%n"
+  file:
+    name: log-file.log

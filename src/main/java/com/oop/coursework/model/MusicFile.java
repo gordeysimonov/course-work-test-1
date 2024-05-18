@@ -2,11 +2,13 @@ package com.oop.coursework.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.oop.coursework.annotation.LogModel;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -69,6 +71,7 @@ public class MusicFile {
         OTHER
     }
 
+    @LogModel
     public void updateAverageRate() {
         if (musicFileRatingList != null && !musicFileRatingList.isEmpty()) {
             double sum = 0;
@@ -82,6 +85,7 @@ public class MusicFile {
         }
     }
 
+    @LogModel
     @PrePersist
     @PreUpdate
     @PostLoad
@@ -89,9 +93,33 @@ public class MusicFile {
         updateAverageRate();
     }
 
+    @LogModel
     public void removeRate(Rate rate) {
         musicFileRatingList.remove(rate);
         updateAverageRate();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "MusicFile{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", author='" + author + '\'' +
+                ", year=" + year +
+                ", description='" + description + '\'' +
+                ", lyrics='" + lyrics + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", fileType=" + fileType +
+                ", downloadDate=" + downloadDate +
+                ", downloadsNumber=" + downloadsNumber +
+                ", userId=" + userId.getUsername() +
+                ", averageRate=" + averageRate +
+                '}';
     }
 
 }

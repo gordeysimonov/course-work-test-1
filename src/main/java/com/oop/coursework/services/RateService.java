@@ -1,6 +1,6 @@
 package com.oop.coursework.services;
 
-import com.oop.coursework.model.Comment;
+import com.oop.coursework.annotation.LogService;
 import com.oop.coursework.model.Rate;
 import com.oop.coursework.repo.CategoryRepo;
 import com.oop.coursework.repo.MusicFileRepo;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,19 +28,18 @@ public class RateService {
         this.categoryService = categoryService;
     }
 
+    @LogService
     public void createNewRate(Rate rate) {
         rateRepository.save(rate);
     }
 
+    @LogService
     public ResponseEntity<?> getRateById(long id) {
-        Optional<Rate> optionalRate = rateRepository.findById(id);
-        if (optionalRate.isPresent()) {
-            return ResponseEntity.ok(optionalRate.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        List<Object[]> rates = rateRepository.findRateById(id);
+        return ResponseEntity.ok(rates);
     }
 
+    @LogService
     public ResponseEntity<?> updateRate(long id, Rate newRateData) {
         Optional<Rate> optionalRate = rateRepository.findById(id);
         if (optionalRate.isPresent()) {
@@ -58,6 +58,7 @@ public class RateService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> deleteRate(long id) {
         Optional<Rate> optionalRate = rateRepository.findById(id);
         if (optionalRate.isPresent()) {

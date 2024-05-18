@@ -1,5 +1,6 @@
 package com.oop.coursework.services;
 
+import com.oop.coursework.annotation.LogService;
 import com.oop.coursework.model.Tag;
 import com.oop.coursework.repo.TagRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,29 +20,24 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
+    @LogService
     public void createNewTag(Tag tag) {
         tagRepository.save(tag);
     }
 
+    @LogService
     public ResponseEntity<?> getTagById(long id) {
-        Optional<Tag> optionalTag = tagRepository.findById(id);
-        if (optionalTag.isPresent()) {
-            return ResponseEntity.ok(optionalTag.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        List<Object[]> tags = tagRepository.findTagById(id);
+        return ResponseEntity.ok(tags);
     }
 
+    @LogService
     public ResponseEntity<?> getAllTags() {
-        List<?> tags = tagRepository.findAll();
-        if (tags.isEmpty()) {
-            ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(tags);
-        }
-        return null;
+        List<Object[]> tags = tagRepository.findAllTags();
+        return ResponseEntity.ok(tags);
     }
 
+    @LogService
     public ResponseEntity<?> updateTag(long id, Tag newTagData) {
         Optional<Tag> optionalTag = tagRepository.findById(id);
         if (optionalTag.isPresent()) {
@@ -54,6 +50,7 @@ public class TagService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> deleteTag(long id) {
         Optional<Tag> optionalTag = tagRepository.findById(id);
         if (optionalTag.isPresent()) {

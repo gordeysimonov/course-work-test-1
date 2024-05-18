@@ -1,5 +1,6 @@
 package com.oop.coursework.services;
 
+import com.oop.coursework.annotation.LogService;
 import com.oop.coursework.model.Notification;
 import com.oop.coursework.repo.NotificationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +21,19 @@ public class NotificationService {
         this.notificationRepository = notificationRepository;
     }
 
+    @LogService
     public void createNewNotification(Notification notification) {
         notification.setDateReceiving(LocalDateTime.now());
         notificationRepository.save(notification);
     }
 
+    @LogService
     public ResponseEntity<?> getNotificationById(long id) {
-        Optional<Notification> optionalNotification = notificationRepository.findById(id);
-        if (optionalNotification.isPresent()) {
-            return ResponseEntity.ok(optionalNotification.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        List<Object[]> notifications = notificationRepository.findNotificationById(id);
+        return ResponseEntity.ok(notifications);
     }
 
+    @LogService
     public ResponseEntity<?> updateNotification(long id, Notification newNotificationData) {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         if (optionalNotification.isPresent()) {
@@ -60,6 +60,7 @@ public class NotificationService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> deleteNotification(long id) {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         if (optionalNotification.isPresent()) {
@@ -70,11 +71,13 @@ public class NotificationService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> getUserNotifications(Long id) {
         List<Object[]> notifications = notificationRepository.findByUserId(id);
         return ResponseEntity.ok(notifications);
     }
 
+    @LogService
     public ResponseEntity<?> getUserNotificationsWithStatus(Long id) {
         List<Object[]> notifications = notificationRepository.findByUserIdAndStatus(id);
         return ResponseEntity.ok(notifications);

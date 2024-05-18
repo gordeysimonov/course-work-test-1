@@ -1,5 +1,6 @@
 package com.oop.coursework.services;
 
+import com.oop.coursework.annotation.LogService;
 import com.oop.coursework.model.*;
 import com.oop.coursework.repo.GenreRepo;
 import com.oop.coursework.repo.MusicFileRepo;
@@ -29,6 +30,7 @@ public class MusicFileService {
         this.categoryService = categoryService;
     }
 
+    @LogService
     public void createNewMusicFile(MusicFile musicFile) {
         musicFile.setDownloadDate(LocalDateTime.now());
         musicFile.setDownloadsNumber(0);
@@ -36,16 +38,19 @@ public class MusicFileService {
         categoryService.updateCategoriesWithFile(savedFile);
     }
 
+    @LogService
     public ResponseEntity<?> getMusicFileById(Long id) {
         List<Object[]> musicFiles = musicFileRepository.findMusicFileById(id);
         return ResponseEntity.ok(musicFiles);
     }
 
+    @LogService
     public ResponseEntity<?> getMusicFiles() {
         List<Object[]> musicFiles = musicFileRepository.findAllMusicFiles();
         return ResponseEntity.ok(musicFiles);
     }
 
+    @LogService
     public ResponseEntity<?> updateMusicFile(Long id, MusicFile newMusicFileData) {
         Optional<MusicFile> optionalMusicFile = musicFileRepository.findById(id);
         if (optionalMusicFile.isPresent()) {
@@ -105,6 +110,7 @@ public class MusicFileService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> deleteMusicFile(long id) {
         Optional<MusicFile> optionalMusicFile = musicFileRepository.findById(id);
         if (optionalMusicFile.isPresent()) {
@@ -115,6 +121,7 @@ public class MusicFileService {
         }
     }
 
+    @LogService
     public MusicFile assignGenreToMusicFile(Long musicFileId, Long genreId) {
         Set<Genre> genreSet;
         MusicFile musicFile = musicFileRepository.findById(musicFileId).get();
@@ -125,6 +132,7 @@ public class MusicFileService {
         return musicFileRepository.save(musicFile);
     }
 
+    @LogService
     public MusicFile assignTagToMusicFile(Long musicFileId, Long tagId) {
         Set<Tag> tagSet;
         MusicFile musicFile = musicFileRepository.findById(musicFileId).get();
@@ -135,10 +143,12 @@ public class MusicFileService {
         return musicFileRepository.save(musicFile);
     }
 
+    @LogService
     public List<Object[]> getMusicFilesByUserId(Long userId) {
         return musicFileRepository.findMusicFilesByUserId(userId);
     }
 
+    @LogService
     public ResponseEntity<?> findMusicFilesByTags(List<String> tags) {
         int tagCount = tags.size();
 
@@ -146,6 +156,7 @@ public class MusicFileService {
         return ResponseEntity.ok(musicFiles);
     }
 
+    @LogService
     public ResponseEntity<?> findMusicFilesByGenres(List<String> genres) {
         int genreCount = genres.size();
 
@@ -153,16 +164,19 @@ public class MusicFileService {
         return ResponseEntity.ok(musicFiles);
     }
 
+    @LogService
     public ResponseEntity<?> findMusicFilesByName(String name) {
         List<Object[]> musicFiles = musicFileRepository.findByName(name);
         return ResponseEntity.ok(musicFiles);
     }
 
+    @LogService
     public ResponseEntity<?> findMusicFilesByAuthor(String author) {
         List<Object[]> musicFiles = musicFileRepository.findByAuthor(author);
         return ResponseEntity.ok(musicFiles);
     }
 
+    @LogService
     public ResponseEntity<?> findMusicFilesByYear(int year) {
         List<Object[]> musicFiles = musicFileRepository.findByYear(year);
         return ResponseEntity.ok(musicFiles);

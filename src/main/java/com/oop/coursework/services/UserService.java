@@ -1,6 +1,7 @@
 package com.oop.coursework.services;
 
 
+import com.oop.coursework.annotation.LogService;
 import com.oop.coursework.model.AppUser;
 import com.oop.coursework.model.Comment;
 import com.oop.coursework.repo.AppUserRepo;
@@ -27,31 +28,26 @@ public class UserService {
         this.commentRepository = commentRepository;
     }
 
+    @LogService
     public void createNewUser(AppUser user) {
         user.setRegistrationDate(LocalDateTime.now());
         user.setStatus("online");
         userRepository.save(user);
     }
 
+    @LogService
     public ResponseEntity<?> getUserById(long id) {
-        Optional<AppUser> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(optionalUser.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        List<Object[]> users = userRepository.findUserById(id);
+        return ResponseEntity.ok(users);
     }
 
+    @LogService
     public ResponseEntity<?> getAllUsers() {
-        List<?> users = userRepository.findAll();
-        if (users.isEmpty()) {
-            ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(users);
-        }
-        return null;
+        List<Object[]> users = userRepository.findAllUsers();
+        return ResponseEntity.ok(users);
     }
 
+    @LogService
     public ResponseEntity<?> updateUser(long id, AppUser newUserData) {
         Optional<AppUser> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
@@ -100,12 +96,13 @@ public class UserService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> deleteUser(long id) {
         Optional<AppUser> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             AppUser user = optionalUser.get();
 
-            List<Comment> userComments = user.getUserCommentsList();
+            Set<Comment> userComments = user.getUserCommentsList();
 
             for (Comment comment : userComments) {
                 deleteCommentBranchByUser(comment);
@@ -119,6 +116,7 @@ public class UserService {
         }
     }
 
+    @LogService
     private void deleteCommentBranchByUser(Comment comment) {
         Set<Comment> repliesCopy = new HashSet<>(comment.getReplies());
         for (Comment reply : repliesCopy) {

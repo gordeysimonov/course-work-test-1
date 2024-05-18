@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -21,5 +22,20 @@ public class AuthenticationSession {
     @ManyToOne
     @JoinColumn(nullable = false)
     private AppUser userId;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "AuthenticationSession{" +
+                "id=" + id +
+                ", sessionStart=" + sessionStart +
+                ", sessionEnd=" + sessionEnd +
+                ", userId=" + userId.getUsername() +
+                '}';
+    }
 
 }

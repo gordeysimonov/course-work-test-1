@@ -1,5 +1,6 @@
 package com.oop.coursework.services;
 
+import com.oop.coursework.annotation.LogService;
 import com.oop.coursework.model.Genre;
 import com.oop.coursework.model.MusicFile;
 import com.oop.coursework.repo.GenreRepo;
@@ -24,29 +25,24 @@ public class GenreService {
         this.musicFileRepository = musicFileRepository;
     }
 
+    @LogService
     public void createNewGenre(Genre genre) {
         genreRepository.save(genre);
     }
 
+    @LogService
     public ResponseEntity<?> getGenreById(long id) {
-        Optional<Genre> optionalGenre = genreRepository.findById(id);
-        if (optionalGenre.isPresent()) {
-            return ResponseEntity.ok(optionalGenre.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        List<Object[]> genres = genreRepository.findGenreById(id);
+        return ResponseEntity.ok(genres);
     }
 
+    @LogService
     public ResponseEntity<?> getAllGenres() {
-        List<?> genres = genreRepository.findAll();
-        if (genres.isEmpty()) {
-            ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(genres);
-        }
-        return null;
+        List<Object[]> genres = genreRepository.findAllGenres();
+        return ResponseEntity.ok(genres);
     }
 
+    @LogService
     public ResponseEntity<?> updateGenre(long id, Genre newGenreData) {
         Optional<Genre> optionalGenre = genreRepository.findById(id);
         if (optionalGenre.isPresent()) {
@@ -64,6 +60,7 @@ public class GenreService {
         }
     }
 
+    @LogService
     @Transactional
     public ResponseEntity<?> deleteGenre(long id) {
         Optional<Genre> optionalGenre = genreRepository.findById(id);

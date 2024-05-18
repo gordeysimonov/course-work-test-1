@@ -1,9 +1,8 @@
 package com.oop.coursework.services;
 
+import com.oop.coursework.annotation.LogService;
 import com.oop.coursework.dto.CommentDTO;
-import com.oop.coursework.model.Category;
 import com.oop.coursework.model.Comment;
-import com.oop.coursework.model.MusicFile;
 import com.oop.coursework.repo.CommentRepo;
 import com.oop.coursework.repo.MusicFileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,31 +24,35 @@ public class CommentService {
         this.musicFileRepository = musicFileRepository;
     }
 
+    @LogService
     public void createNewComment(Comment comment) {
         comment.setPostDate(LocalDateTime.now());
         Comment savedComment = commentRepository.save(comment);
-        savedComment.getReply().getReplies().add(savedComment);
         if (savedComment.getReply() != null) {
             savedComment.getReply().getReplies().add(savedComment);
             commentRepository.save(savedComment.getReply());
         }
     }
 
+    @LogService
     public ResponseEntity<?> getCommentById(long id) {
-        Optional<Comment> optionalComment = commentRepository.findById(id);
-        if (optionalComment.isPresent()) {
-            return ResponseEntity.ok(optionalComment.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        List<Object[]> comments = commentRepository.findCommentById(id);
+        return ResponseEntity.ok(comments);
     }
 
+    @LogService
     public ResponseEntity<?> updateComment(long id, Comment newCommentData) {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         if (optionalComment.isPresent()) {
             Comment existingComment = optionalComment.get();
             if(newCommentData.getCommentText() != null) {
                 existingComment.setCommentText(newCommentData.getCommentText());
+            }
+            if(newCommentData.getReply() != null) {
+                existingComment.setReply(newCommentData.getReply());
+            }
+            if(newCommentData.getPostDate() != null) {
+                existingComment.setPostDate(newCommentData.getPostDate());
             }
             if(newCommentData.getUserId() != null) {
                 existingComment.setUserId(newCommentData.getUserId());
@@ -64,6 +67,7 @@ public class CommentService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> deleteComment(long id) {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         if (optionalComment.isPresent()) {
@@ -76,6 +80,7 @@ public class CommentService {
         }
     }
 
+    @LogService
     private void deleteCommentBranch(Comment comment) {
         Set<Comment> repliesCopy = new HashSet<>(comment.getReplies());
         for (Comment reply : repliesCopy) {
@@ -85,6 +90,7 @@ public class CommentService {
         }
     }
 
+    @LogService
     public ResponseEntity<?> getCommentBranchById(long id) {
         List<CommentDTO> commentBranchDTO = new ArrayList<>();
         getCommentBranch(id, commentBranchDTO);
@@ -95,6 +101,7 @@ public class CommentService {
         }
     }
 
+    @LogService
     private void getCommentBranch(long id, List<CommentDTO> commentBranchDTO) {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         if (optionalComment.isPresent()) {
@@ -123,37 +130,10 @@ public class CommentService {
         }
     }
 
-    public ResponseEntity<?> getCommentsByFileId(long id) {
-        Optional<MusicFile> optionalFile = musicFileRepository.findById(id);
-        if (optionalFile.isPresent()) {
-            MusicFile musicFile = optionalFile.get();
-            List<CommentDTO> commentDTOs = new ArrayList<>();
-            for (Comment comment : musicFile.getMusicFileCommentList()) {
-                CommentDTO commentDTO = new CommentDTO();
-                commentDTO.setId(comment.getId());
-                if (comment.getReply() != null) {
-                    commentDTO.setReplyId(comment.getReply().getId());
-                }
-                if (comment.getCommentText() != null) {
-                    commentDTO.setCommentText(comment.getCommentText());
-                }
-                if (comment.getPostDate() != null) {
-                    commentDTO.setPostDate(comment.getPostDate());
-                }
-                if (comment.getUserId() != null) {
-                    commentDTO.setUserId(comment.getUserId().getId());
-                }
-                if (comment.getMusicFileId() != null) {
-                    commentDTO.setMusicFileId(comment.getMusicFileId().getId());
-                }
-                commentDTOs.add(commentDTO);
-            }
-            return ResponseEntity.ok(commentDTOs);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @LogService
+    public ResponseEntity<?> getCommentsByFileId(Long id) {
+        List<Object[]> comments = commentRepository.findCommentsByFileId(id);
+        return ResponseEntity.ok(comments);
     }
-
-
 
 }
